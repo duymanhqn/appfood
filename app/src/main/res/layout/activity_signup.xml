@@ -1,0 +1,101 @@
+<!-- res/layout/activity_signup.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="24dp"
+    android:background="@color/white">
+
+    <ImageView
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_shopee_logo" />
+
+    <EditText
+        android:id="@+id/edESignup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Email"
+        android:inputType="textEmailAddress"
+        android:layout_marginTop="12dp"
+        android:drawableStart="@drawable/icon_login"/>
+
+    <EditText
+        android:id="@+id/edPSignup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Mật khẩu"
+        android:inputType="textPassword"
+        android:layout_marginTop="12dp"
+        android:drawableStart="@drawable/icon_pass"/>
+
+    <EditText
+        android:id="@+id/edRePass"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nhập lại mật khẩu"
+        android:inputType="textPassword"
+        android:layout_marginTop="12dp"
+        android:drawableStart="@drawable/icon_pass"/>
+    <EditText
+        android:id="@+id/phone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nhập số điện thoại"
+        android:layout_marginTop="12dp"
+        android:drawableStart="@drawable/hotlinee"
+        />
+    <EditText
+        android:id="@+id/diachi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nhập địa chỉ"
+        android:layout_marginTop="12dp"
+        android:drawableStart="@drawable/home"
+    />
+
+
+    <CheckBox
+        android:id="@+id/checkBox"
+        android:layout_width="198dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:text="Ghi nhớ đăng nhập"
+        android:textSize="16dp" />
+
+    <Button
+        android:id="@+id/btnSignup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Đăng ký"
+        android:layout_marginTop="10dp"
+        android:backgroundTint="@color/orange" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+
+            android:text="Chưa có tài khoản? "
+            android:textColor="@color/blue" />
+
+        <TextView
+            android:id="@+id/ToLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+
+            android:text=" Đăng nhập"
+            android:textColor="@color/blue" />
+
+    </LinearLayout>
+
+</LinearLayout>
