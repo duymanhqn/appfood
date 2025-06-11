@@ -1,47 +1,165 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
-    >
+    android:orientation="vertical"
+    android:background="#F5F5F5"
+    android:baselineAligned="false"> <!-- Thêm thuộc tính baselineAligned -->
 
-    <LinearLayout
-        android:orientation="vertical"
+    <!-- Thanh tìm kiếm -->
+    <EditText
+        android:id="@+id/search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:hint="@string/hint_search"
+        android:padding="10dp"
+        android:textColorHint="#757575"
+        android:drawableEnd="@android:drawable/ic_menu_search"
+        android:background="@color/cardview_light_background"
+        android:inputType="text"
+        android:layout_margin="8dp" />
 
-        <!-- Thanh tìm kiếm -->
-        <EditText
-            android:id="@+id/search_bar"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:hint="Tên món ăn..."
-            android:drawableEnd="@android:drawable/ic_menu_search"
-            android:padding="12dp"
-            android:layout_marginBottom="16dp"
-            />
+    <!-- Phần carousel ảnh -->
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/displayImage"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_margin="8dp"
+        android:contentDescription="@string/carousel_description" />
 
-        <!-- Ảnh nổi bật -->
-        <ImageView
-            android:id="@+id/featured_image"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_shopee_logo" />
+    <!-- Tiêu đề gợi ý món ăn -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+    android:text="@string/suggested_dishes"
+    android:textSize="20sp"
+    android:textColor="@color/orange"
+    android:gravity="left"
+    android:padding="8dp"
+    android:background="#FFFFFF"
+    android:layout_margin="8dp" />
 
-        <!-- Tiêu đề -->
-        <TextView
-            android:layout_width="wrap_content"
+    <!-- Danh sách món ăn (sử dụng RecyclerView) -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="8dp"
+        android:contentDescription="@string/recycler_view_description" />
+
+    <!-- Menu điều hướng dưới cùng -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#FFFFFF"
+        android:gravity="center"
+        android:padding="8dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Gợi ý món ăn"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="8dp"
-            android:textColor="@color/orange"/>
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
 
-        <!-- (Bạn có thể thêm các món ăn ở đây sau này) -->
+            <ImageButton
+                android:id="@+id/btnHome"
+                android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/home"
+            android:background="?android:attr/selectableItemBackground"
+            android:scaleType="fitCenter"
+            android:padding="4dp"
+            android:contentDescription="@string/home_description" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/menu_home"
+                android:textSize="12sp"
+                android:textColor="#000000"
+                android:gravity="center" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageButton
+                android:id="@+id/btnCart"
+                android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/giohang"
+            android:background="?android:attr/selectableItemBackground"
+            android:scaleType="fitCenter"
+            android:padding="4dp"
+            android:contentDescription="@string/cart_description" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/menu_cart"
+                android:textSize="12sp"
+                android:textColor="#000000"
+                android:gravity="center" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageButton
+                android:id="@+id/btnHistory"
+                android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/lichsu"
+            android:background="?android:attr/selectableItemBackground"
+            android:scaleType="fitCenter"
+            android:padding="4dp"
+            android:contentDescription="@string/history_description" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/menu_history"
+                android:textSize="12sp"
+                android:textColor="#000000"
+                android:gravity="center" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageButton
+                android:id="@+id/btnMy"
+                android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/icon_login"
+            android:background="?android:attr/selectableItemBackground"
+            android:scaleType="fitCenter"
+            android:padding="4dp"
+            android:contentDescription="@string/my_description" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/menu_my"
+                android:textSize="12sp"
+                android:textColor="#000000"
+                android:gravity="center" />
+        </LinearLayout>
     </LinearLayout>
-</ScrollView>
+
+</LinearLayout>

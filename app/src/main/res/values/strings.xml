@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">foodapp</string>
+    <string name="hint_search">Tên món ăn...</string>
+    <string name="carousel_description">Carousel of food images</string>
+    <string name="suggested_dishes">Gợi ý món ăn</string>
+    <string name="recycler_view_description">List of food items</string>
+    <string name="home_description">Home button</string>
+    <string name="cart_description">Cart button</string>
+    <string name="history_description">History button</string>
+    <string name="my_description">My profile button</string>
+    <string name="menu_home">Đồ ăn</string>
+    <string name="menu_cart">Giỏ hàng</string>
+    <string name="menu_history">Lịch sử</string>
+    <string name="menu_my">Tôi</string>
 </resources>

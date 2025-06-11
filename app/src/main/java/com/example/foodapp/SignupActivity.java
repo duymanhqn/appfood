@@ -30,14 +30,14 @@ public class SignupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
-        edESignup = findViewById(R.id.edESignup);   // email
-        edPSignup = findViewById(R.id.edPSignup);   // password
-        edRePass = findViewById(R.id.edRePass);     // re-enter password
-        phone = findViewById(R.id.phone);           // SDT
-        diachi = findViewById(R.id.diachi);         // địa chỉ
+        edESignup = findViewById(R.id.edESignup);
+        edPSignup = findViewById(R.id.edPSignup);
+        edRePass = findViewById(R.id.edRePass);
+        phone = findViewById(R.id.phone);
+        diachi = findViewById(R.id.diachi);
 
-        btnSignup = findViewById(R.id.btnSignup);   // button đăng ký
-        toLogin = findViewById(R.id.ToLogin);       // chuyển đến login
+        btnSignup = findViewById(R.id.btnSignup);
+        toLogin = findViewById(R.id.ToLogin);
 
         btnSignup.setOnClickListener(v -> {
             String email = edESignup.getText().toString().trim();
@@ -67,7 +67,7 @@ public class SignupActivity extends AppCompatActivity {
                             // Chuyển sang trang Login sau khi đăng ký thành công
                             Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
                             startActivity(intent);
-                            finish(); // Đóng SignUpActivity
+                            finish();
                         } else {
                             Toast.makeText(this, "Phản hồi không hợp lệ từ server: " + response, Toast.LENGTH_SHORT).show();
                         }
