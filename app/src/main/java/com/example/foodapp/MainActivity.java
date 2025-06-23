@@ -1,31 +1,51 @@
 package com.example.foodapp;
-
-import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.widget.TextView;
-
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import android.os.Bundle;
+import android.os.Handler;
+import android.widget.ImageView;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
-    private TextView textView2;
+    private ImageView dislayimages;
+    private int[] imageIds = {
+            R.drawable.boluclac,
+            R.drawable.cachimchienmam,
+            R.drawable.cadieuhonghap,
+            R.drawable.changanuong,
+            R.drawable.changarutxuong,
+            R.drawable.dauhuchien,
+            R.drawable.gachienmam,
+            R.drawable.gakhosa,
+            R.drawable.thitboxao
+    };
+
+    private int currentIndex = 0;
+    private Handler handler = new Handler();
+    private Runnable imageSlider;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+
+        dislayimages = findViewById(R.id.dislayimages);
+
+        imageSlider = new Runnable() {
+            @Override
+            public void run() {
+                dislayimages.setImageResource(imageIds[currentIndex]);
+                currentIndex = (currentIndex + 1) % imageIds.length;
+                handler.postDelayed(this, 3000); // 3 giây
+            }
+        };
+
+        handler.post(imageSlider);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        handler.removeCallbacks(imageSlider);
     }
 }
