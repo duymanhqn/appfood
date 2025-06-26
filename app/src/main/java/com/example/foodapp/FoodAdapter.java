@@ -1,6 +1,7 @@
 package com.example.foodapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -41,26 +41,25 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.MonAnViewHolde
     public void onBindViewHolder(@NonNull MonAnViewHolder holder, int position) {
         MonAn monAn = monAnList.get(position);
         holder.tvName.setText(monAn.getTenmAn());
-
-        // Hiển thị giá và đơn vị tính
-        String giaDvt = monAn.getGia() + " " + monAn.getDVT();
-        holder.tvPrice.setText(giaDvt);
-
+        holder.tvPrice.setText(monAn.getGia() + " " + monAn.getDVT());
         holder.tvDescription.setText(monAn.getMota());
 
-        // Load ảnh từ server
         String imageUrl = "http://10.0.2.2:8888/images/" + monAn.getHinhanh();
 
-        RequestManager requestManager = Glide.with(context);
-        RequestBuilder<Drawable> requestBuilder = requestManager
+        Glide.with(context)
                 .load(imageUrl)
-                .placeholder(R.drawable.boluclac)
-                .error(R.drawable.home);
-
-        requestBuilder.into(holder.imgFood);
+                .placeholder(R.drawable.home)
+                .error(R.drawable.home)
+                .into(holder.imgFood);
 
         holder.btnView.setOnClickListener(v -> {
-            Toast.makeText(context, "Bạn chọn: " + monAn.getTenmAn(), Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(context, Detailfood.class);
+            intent.putExtra("tenmAn", monAn.getTenmAn());
+            intent.putExtra("gia", monAn.getGia());
+            intent.putExtra("dvt", monAn.getDVT());
+            intent.putExtra("mota", monAn.getMota());
+            intent.putExtra("hinhanh", monAn.getHinhanh());
+            context.startActivity(intent);
         });
     }
 
