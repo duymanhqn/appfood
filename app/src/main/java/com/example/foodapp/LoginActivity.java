@@ -2,6 +2,7 @@
 package com.example.foodapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -40,11 +41,10 @@ public class LoginActivity extends AppCompatActivity {
         requestQueue = Volley.newRequestQueue(this);
 
         btnLogin.setOnClickListener(view -> login());
+
         toSignup.setOnClickListener(v -> {
-            Toast.makeText(this, "Chuyển đến Đăng ký", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(LoginActivity.this, SignupActivity.class));
         });
-
     }
 
     private void login() {
@@ -69,39 +69,37 @@ public class LoginActivity extends AppCompatActivity {
                         try {
                             boolean success = response.getBoolean("success");
                             if (success) {
-                                String userEmail = response.getJSONObject("user").getString("email");
-                                Toast.makeText(this, "Đăng nhập thành công: " + userEmail, Toast.LENGTH_SHORT).show();
+                                JSONObject user = response.getJSONObject("user");
+                                int iduser = user.getInt("iduser");
+                                String userEmail = user.getString("email");
+
+                                // Lưu ID vào SharedPreferences
+                                SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+                                SharedPreferences.Editor editor = prefs.edit();
+                                editor.putInt("iduser", iduser);
+                                editor.putString("email", userEmail);
+                                editor.apply();
+
+                                Toast.makeText(this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
+
                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                 startActivity(intent);
+                                finish();
                             } else {
-                                Toast.makeText(this, "Đăng nhập thất bại", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, "Sai email hoặc mật khẩu", Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
-                            Log.e(TAG, "JSON error: " + e.getMessage());
+                            Log.e(TAG, "Lỗi JSON: " + e.getMessage());
                         }
                     },
-                    error -> {
-                        if (error.networkResponse != null && error.networkResponse.data != null) {
-                            try {
-                                String errorBody = new String(error.networkResponse.data, "UTF-8");
-                                JSONObject errorJson = new JSONObject(errorBody);
-                                String message = errorJson.optString("message");
-                                Toast.makeText(this, "Lỗi: " + message, Toast.LENGTH_SHORT).show();
-                            } catch (Exception e) {
-                                Log.e(TAG, "Error parsing error response: " + e.getMessage());
-                                Toast.makeText(this, "Lỗi server: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                            }
-                        } else {
-                            Toast.makeText(this, "Lỗi kết nối server: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    }
+                    error -> Toast.makeText(this, "Lỗi kết nối: " + error.getMessage(), Toast.LENGTH_SHORT).show()
             );
 
             requestQueue.add(request);
+
         } catch (JSONException e) {
             Log.e(TAG, "Lỗi tạo JSON: " + e.getMessage());
         }
-
     }
-
 }
+
