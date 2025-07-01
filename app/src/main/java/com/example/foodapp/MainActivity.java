@@ -1,14 +1,11 @@
-
 package com.example.foodapp;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -16,17 +13,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.foodapp.Apiconnect.FoodApiService;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.foodapp.apiImages.ImageModel.MonAn;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,13 +31,10 @@ public class MainActivity extends AppCompatActivity {
     private EditText edtSearch;
     private RecyclerView recyclerView;
     private FoodAdapter adapter;
+    private List<MonAn> monAnList = new ArrayList<>();
 
     private Handler handler = new Handler();
     private Runnable imageSlider;
-
-    private List<MonAn> monAnList = new ArrayList<>();
-    private List<MonAn> fullList = new ArrayList<>();
-
     private int[] imageIds = {
             R.drawable.boluclac,
             R.drawable.cachimchienmam,
@@ -54,10 +48,7 @@ public class MainActivity extends AppCompatActivity {
     };
     private int currentIndex = 0;
 
-    private Retrofit retrofit;
-    private FoodApiService apiService;
-
-    private int iduser = -1; // Lưu iduser lấy từ login
+    private int iduser = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,33 +59,15 @@ public class MainActivity extends AppCompatActivity {
         edtSearch = findViewById(R.id.search);
         recyclerView = findViewById(R.id.recyclerView);
 
-        // Lấy iduser từ SharedPreferences
         SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
         iduser = prefs.getInt("iduser", -1);
-
-        if (iduser == -1) {
-            Toast.makeText(this, "Không tìm thấy ID người dùng. Vui lòng đăng nhập lại.", Toast.LENGTH_LONG).show();
-            // Có thể điều hướng về LoginActivity nếu cần
-        }
-//        else {
-//            Toast.makeText(this, " " , Toast.LENGTH_SHORT).show();
-//        }
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new FoodAdapter(this, monAnList);
         recyclerView.setAdapter(adapter);
 
-        // Init retrofit
-        retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:8888/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        apiService = retrofit.create(FoodApiService.class);
+        fetchAllMonAn();
 
-        // Load danh sách món ăn
-        fetchMonAnFromApi();
-
-        // Auto image slider
         imageSlider = new Runnable() {
             @Override
             public void run() {
@@ -105,69 +78,58 @@ public class MainActivity extends AppCompatActivity {
         };
         handler.post(imageSlider);
 
-        // Search
         edtSearch.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override public void afterTextChanged(Editable s) {}
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                searchMonAn(s.toString());
+                if (s.toString().trim().isEmpty()) {
+                    fetchAllMonAn();
+                } else {
+                    searchMonAn(s.toString().trim());
+                }
             }
-        });
-
-        // 👉 Thêm sự kiện chuyển sang giỏ hàng
-        ImageButton btnCart = findViewById(R.id.btnCart);
-        btnCart.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, Cart.class);
-            intent.putExtra("iduser", iduser); // Truyền iduser nếu cần
-            startActivity(intent);
-        });
-        ImageButton btnMy = findViewById(R.id.btnMy);
-        btnMy.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
-            intent.putExtra("iduser", iduser); // Truyền id người dùng qua Profile
-            startActivity(intent);
-        });
-        ImageButton btnHistory = findViewById(R.id.btnHistory);
-        btnHistory.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
-            intent.putExtra("iduser", iduser);
-            startActivity(intent);
         });
     }
 
-    private void fetchMonAnFromApi() {
-        Call<List<MonAn>> call = apiService.getDanhSachMonAn();
-        call.enqueue(new Callback<List<MonAn>>() {
-            @Override
-            public void onResponse(Call<List<MonAn>> call, Response<List<MonAn>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    fullList = response.body();
-                    monAnList.clear();
-                    monAnList.addAll(fullList);
-                    adapter.notifyDataSetChanged();
-                } else {
-                    Toast.makeText(MainActivity.this, "Lỗi lấy dữ liệu món ăn", Toast.LENGTH_SHORT).show();
-                }
-            }
+    private void fetchAllMonAn() {
+        String url = "http://10.0.2.2:8888/api/foodapi"; // Endpoint lấy toàn bộ
+        RequestQueue queue = Volley.newRequestQueue(this);
 
-            @Override
-            public void onFailure(Call<List<MonAn>> call, Throwable t) {
-                Toast.makeText(MainActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
+        JsonArrayRequest req = new JsonArrayRequest(Request.Method.GET, url, null,
+                response -> parseResponse(response),
+                error -> Toast.makeText(this, "Lỗi tải danh sách", Toast.LENGTH_SHORT).show());
+
+        queue.add(req);
     }
 
     private void searchMonAn(String keyword) {
+        String url = "http://10.0.2.2:8888/api/search?keyword=" + keyword;
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        JsonArrayRequest req = new JsonArrayRequest(Request.Method.GET, url, null,
+                response -> parseResponse(response),
+                error -> Toast.makeText(this, "Lỗi tìm kiếm", Toast.LENGTH_SHORT).show());
+
+        queue.add(req);
+    }
+
+    private void parseResponse(JSONArray response) {
         monAnList.clear();
-        if (keyword.trim().isEmpty()) {
-            monAnList.addAll(fullList);
-        } else {
-            for (MonAn item : fullList) {
-                if (item.getTenmAn().toLowerCase().contains(keyword.toLowerCase())) {
-                    monAnList.add(item);
-                }
+        try {
+            for (int i = 0; i < response.length(); i++) {
+                JSONObject o = response.getJSONObject(i);
+                MonAn mon = new MonAn(
+                        o.getString("tenmAn"),
+                        o.getString("Gia"),
+                        o.getString("DVT"),
+                        o.getString("hinhanh"),
+                        o.getString("mota")
+                );
+                monAnList.add(mon);
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         adapter.notifyDataSetChanged();
     }
