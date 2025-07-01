@@ -75,9 +75,10 @@ public class MainActivity extends AppCompatActivity {
         if (iduser == -1) {
             Toast.makeText(this, "Không tìm thấy ID người dùng. Vui lòng đăng nhập lại.", Toast.LENGTH_LONG).show();
             // Có thể điều hướng về LoginActivity nếu cần
-        } else {
-            Toast.makeText(this, "Xin chào, user ID: " + iduser, Toast.LENGTH_SHORT).show();
         }
+//        else {
+//            Toast.makeText(this, " " , Toast.LENGTH_SHORT).show();
+//        }
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new FoodAdapter(this, monAnList);
@@ -125,6 +126,12 @@ public class MainActivity extends AppCompatActivity {
         btnMy.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
             intent.putExtra("iduser", iduser); // Truyền id người dùng qua Profile
+            startActivity(intent);
+        });
+        ImageButton btnHistory = findViewById(R.id.btnHistory);
+        btnHistory.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
+            intent.putExtra("iduser", iduser);
             startActivity(intent);
         });
     }
